@@ -34,16 +34,18 @@ def menu():
 		elif user_choice == "M":
 			visited_mark()
 		#Choice Q - Quit:
-		else:
+		elif user_choice == "Q":
 			save_places()
 			print("Have a nice day :)")
+		else:
+			print("Invalid menu choice")
 
 #Create function places list:
 def places_list():
 	#Print all places:
 	for i in range(0, len(place_names)):
-		print(" {0} {1}. {2:30} in {3:30} priority ({4})".format(place_visited[i], i, place_names[i],
-									 place_countries[i], place_priority[i]))
+		print(" {0} {1}. {2:30} in {3:30} priority ({4})".format(place_visited[i], i + 1, place_names[i],
+																 place_countries[i], place_priority[i]))
 	#Print numbers of both place visited and not visited:
 	print("{} places. You still want to visit {} places.".format(len(place_names), place_visited.count("*")))
 
@@ -55,6 +57,7 @@ def add_a_place():
 		if new_place_name == "":
 			print("Input can not be blank")
 		else:
+			place_names.append(new_place_name)
 			break
 	#Loop to input a country name:
 	while True:
@@ -62,6 +65,7 @@ def add_a_place():
 		if new_country_name == "":
 			print("Input can not be blank")
 		else:
+			place_countries.append(new_country_name)
 			break
 	#Loop to input a priority number:
 	while True:
@@ -70,48 +74,56 @@ def add_a_place():
 			if new_priority_number <= 0:
 				print("Number must be > 0")
 			else:
+				place_priority.append(new_priority_number)
 				break
 		except ValueError:
 			print("Invalid input; enter a valid number")
+	place_visited.append("*")
 	print("{} in {} (priority {}) added to Travel Tracker".format(new_place_name, new_country_name,
-								      new_priority_number))
+																  new_priority_number))
 
 #Create function visited mark:
 def visited_mark():
 	#Input the number of the place visited:
 	for i in range(0, len(place_names)):
-		print(" {0} {1}. {2:30} in {3:30} priority ({4})".format(place_visited[i], i, place_names[i],
+		print(" {0} {1}. {2:30} in {3:30} priority ({4})".format(place_visited[i], i + 1, place_names[i],
 									 place_countries[i], place_priority[i]))
 	#Print numbers of both place visited and not visited:
 	print("{} places. You still want to visit {} places.".format(len(place_names), place_visited.count("*")))
 	print("Enter the number of a place to mark as visited: ")
-	new_mark = int(input(">>> "))
-	try:
+	new_mark = int(input(">>> ")) - 1
+	while True:
 		#Loop to check the number is correct:
-		if 0 <= new_mark < len(place_names):
-			if place_visited[new_mark] == "*":
-				print("{} in {} visited!".format(place_names[new_mark], place_countries[new_mark]))
-				place_visited[new_mark] = " "
+		try:
+			if 0 <= new_mark < len(place_names):
+				if place_visited[new_mark] == "*":
+					print("{} in {} visited!".format(place_names[new_mark], place_countries[new_mark]))
+					place_visited[new_mark] = " "
+					break
+				else:
+					print("That place is already visited.")
+					break
 			else:
-				print("That place is already visited.")
-		else:
+				print("Invalid input; enter a valid number!")
+				new_mark = int(input(">>> "))
+		except ValueError:
 			print("Invalid input; enter a valid number!")
-	except ValueError:
-		print("Invalid input; enter a valid number!")
+			new_mark = int(input(">>> "))
 
 #Create function save places:
 def save_places():
-	#Open CSV file and edit changes:
-	out_file = open("places.csv", 'w')
-	#Loop through the list:
+	place_lists = []
 	for i in range(0, len(place_names)):
-		#Change the symbols from "*" and " " back to "n" and "v":
-		save_places = place_visited[i]
-		if save_places == " ":
-			save_places = "v"
+		if place_visited[i] == " ":
+			place_visited[i] = "v"
 		else:
-			save_places = "n"
-		print("{},{},{},{}".format(place_names[i], place_countries[i], place_priority[i], place_visited[i]))
+			place_visited[i] = "n"
+		add_list = [place_names[i], place_countries[i], place_priority[i], place_visited[i]]
+		place_lists.append(add_list)
+	#Open CSV file and edit changes:
+	out_file = open("places.csv", "w")
+	for each in place_lists:
+		out_file.writelines(str(each) + "\n")
 	out_file.close()
 
 #Create function load places:
