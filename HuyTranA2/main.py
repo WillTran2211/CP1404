@@ -2,7 +2,7 @@
 Name: Huy Tran
 Date: 20/9/2019
 Brief Project Description: This is the project of implementing Travel Tracker 2.0 app
-GitHub URL:
+GitHub URL: https://github.com/WillTran2211/CP1404/tree/master/HuyTranA2
 """
 
 # Create your main program in this file, using the TravelTrackerApp class
